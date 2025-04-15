@@ -21,23 +21,32 @@
       import { IfcViewerAPI } from 'https://cdn.jsdelivr.net/npm/web-ifc-viewer@1.0.168/dist/ifcviewer.esm.js';
 
       window.onload = async () => {
-        const container = document.getElementById('viewer-container');
-        const viewer = new IfcViewerAPI({ container });
-        viewer.grid.setGrid();
-        viewer.axes.setAxes();
-        await viewer.IFC.setWasmPath('https://cdn.jsdelivr.net/npm/web-ifc@0.0.47/');
+        try {
+          const container = document.getElementById('viewer-container');
+          const viewer = new IfcViewerAPI({ container });
+          viewer.grid.setGrid();
+          viewer.axes.setAxes();
+          await viewer.IFC.setWasmPath('https://cdn.jsdelivr.net/npm/web-ifc@0.0.47/');
 
-        // Load IFC file
-        const model = await viewer.IFC.loadIfcUrl('test.ifc');
+          // Check if the IFC file is accessible
+          const modelUrl = 'structure.ifc';
+          console.log("Loading IFC file from:", modelUrl);
+          
+          const model = await viewer.IFC.loadIfcUrl(modelUrl);
+          console.log("IFC model loaded:", model);
 
-        // Highlight element if ID passed in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const expressID = urlParams.get('id');
-        if (expressID) {
-          const id = parseInt(expressID);
-          viewer.IFC.selector.pickIfcItemsByID(model.modelID, [id], true);
-          viewer.IFC.selector.highlightIfcItemsByID(model.modelID, [id], true);
-          viewer.zoomToSelection(model.modelID, [id]);
+          // Highlight element if ID passed in URL
+          const urlParams = new URLSearchParams(window.location.search);
+          const expressID = urlParams.get('id');
+          if (expressID) {
+            const id = parseInt(expressID);
+            console.log(`Highlighting IFC element with ID: ${id}`);
+            viewer.IFC.selector.pickIfcItemsByID(model.modelID, [id], true);
+            viewer.IFC.selector.highlightIfcItemsByID(model.modelID, [id], true);
+            viewer.zoomToSelection(model.modelID, [id]);
+          }
+        } catch (error) {
+          console.error("Error loading IFC model:", error);
         }
       };
     </script>
