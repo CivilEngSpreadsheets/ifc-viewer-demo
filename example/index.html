@@ -12,10 +12,34 @@
   </head>
   <body>
     <aside class="side-menu" id="side-menu-left"></aside>
-      <div id="viewer-container"></div>
+      <div id="viewer-container" style="height: 100vh;"></div>
       <div id="loading-overlay" class="loading-overlay hidden">
       <h1 id="loading-progress" class="loading-progress"></h1>
     </div>
-    <script type="module" src="./build/main.js"></script>
+    <script type="module">
+  import { IfcViewerAPI } from 'web-ifc-viewer';
+
+  window.onload = async () => {
+    const container = document.getElementById('viewer-container');
+    const viewer = new IfcViewerAPI({ container });
+    viewer.grid.setGrid();
+    viewer.axes.setAxes();
+    await viewer.IFC.setWasmPath("./");
+
+    // Load the IFC file
+    const model = await viewer.IFC.loadIfcUrl("structure.ifc");
+
+    // Highlight the element if an ID is passed in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const expressID = urlParams.get("id");
+    if (expressID) {
+      const id = parseInt(expressID);
+      viewer.IFC.selector.pickIfcItemsByID(model.modelID, [id], true);
+      viewer.IFC.selector.highlightIfcItemsByID(model.modelID, [id], true);
+      viewer.zoomToSelection(model.modelID, [id]);
+    }
+  };
+</script>
+
   </body>
 </html>
