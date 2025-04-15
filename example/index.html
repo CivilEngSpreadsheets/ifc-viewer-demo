@@ -27,7 +27,7 @@
     await viewer.IFC.setWasmPath("./");
 
     // Load the IFC file
-    const model = await viewer.IFC.loadIfcUrl("test.ifc");
+    const model = await viewer.IFC.loadIfcUrl("structure.ifc");
 
     // Highlight the element if an ID is passed in the URL
     const urlParams = new URLSearchParams(window.location.search);
