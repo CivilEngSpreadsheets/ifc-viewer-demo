@@ -3,43 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="icon" type="image/png" href="./favicon.ico" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IFC.js</title>
+    <title>IFC Viewer Demo</title>
   </head>
   <body>
     <aside class="side-menu" id="side-menu-left"></aside>
-      <div id="viewer-container" style="height: 100vh;"></div>
-      <div id="loading-overlay" class="loading-overlay hidden">
+    <div id="viewer-container" style="height: 100vh;"></div>
+    <div id="loading-overlay" class="loading-overlay hidden">
       <h1 id="loading-progress" class="loading-progress"></h1>
     </div>
+
     <script type="module">
-  import { IfcViewerAPI } from 'web-ifc-viewer';
+      import { IfcViewerAPI } from 'https://cdn.jsdelivr.net/npm/web-ifc-viewer@1.0.168/dist/ifcviewer.esm.js';
 
-  window.onload = async () => {
-    const container = document.getElementById('viewer-container');
-    const viewer = new IfcViewerAPI({ container });
-    viewer.grid.setGrid();
-    viewer.axes.setAxes();
-    await viewer.IFC.setWasmPath("./");
+      window.onload = async () => {
+        const container = document.getElementById('viewer-container');
+        const viewer = new IfcViewerAPI({ container });
+        viewer.grid.setGrid();
+        viewer.axes.setAxes();
+        await viewer.IFC.setWasmPath('https://cdn.jsdelivr.net/npm/web-ifc@0.0.47/');
 
-    // Load the IFC file
-    const model = await viewer.IFC.loadIfcUrl("structure.ifc");
+        // Load IFC file
+        const model = await viewer.IFC.loadIfcUrl('structure.ifc');
 
-    // Highlight the element if an ID is passed in the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const expressID = urlParams.get("id");
-    if (expressID) {
-      const id = parseInt(expressID);
-      viewer.IFC.selector.pickIfcItemsByID(model.modelID, [id], true);
-      viewer.IFC.selector.highlightIfcItemsByID(model.modelID, [id], true);
-      viewer.zoomToSelection(model.modelID, [id]);
-    }
-  };
-</script>
-
+        // Highlight element if ID passed in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const expressID = urlParams.get('id');
+        if (expressID) {
+          const id = parseInt(expressID);
+          viewer.IFC.selector.pickIfcItemsByID(model.modelID, [id], true);
+          viewer.IFC.selector.highlightIfcItemsByID(model.modelID, [id], true);
+          viewer.zoomToSelection(model.modelID, [id]);
+        }
+      };
+    </script>
   </body>
 </html>
